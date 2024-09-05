@@ -1,5 +1,6 @@
 package com.api.crud.services;
 
+import com.api.crud.execptions.ResponseMessage;
 import com.api.crud.models.Cliente;
 import com.api.crud.repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,14 @@ public class ClienteService {
         return clienteRepository.save(clienteExistente);
     }
 
-    public void eliminarCliente(Long id) {
-        Cliente cliente = obtenerClientePorId(id);  
-        clienteRepository.delete(cliente);
+
+    public ResponseMessage eliminarCliente(Long id) {
+        Optional<Cliente> cliente = clienteRepository.findById(id);
+        if (cliente.isPresent()) {
+            clienteRepository.delete(cliente.get());
+            return new ResponseMessage("Cliente eliminado con éxito.");
+        } else {
+            return new ResponseMessage("Cliente no encontrado.");
+        }
     }
 }

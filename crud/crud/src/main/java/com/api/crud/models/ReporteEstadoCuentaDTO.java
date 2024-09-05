@@ -1,8 +1,13 @@
 package com.api.crud.models;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReporteEstadoCuentaDTO {
+
+    private Long clienteId;
+    private List<CuentaDTO> cuentas;
 
     public Long getClienteId() {
         return clienteId;
@@ -20,11 +25,12 @@ public class ReporteEstadoCuentaDTO {
         this.cuentas = cuentas;
     }
 
-    private Long clienteId;
-    private List<CuentaDTO> cuentas;
-
     public static class CuentaDTO {
         private Long numeroCuenta;
+        private String tipoCuenta;
+        private Double saldoInicial;
+        private Double saldoDisponible;
+        private List<MovimientoDTO> movimientos;
 
         public Long getNumeroCuenta() {
             return numeroCuenta;
@@ -65,11 +71,6 @@ public class ReporteEstadoCuentaDTO {
         public void setMovimientos(List<MovimientoDTO> movimientos) {
             this.movimientos = movimientos;
         }
-
-        private String tipoCuenta;
-        private Double saldoInicial;
-        private Double saldoDisponible;
-        private List<MovimientoDTO> movimientos;
 
         public static class MovimientoDTO {
             private String fecha;
@@ -118,7 +119,5 @@ public class ReporteEstadoCuentaDTO {
                 this.saldoDisponible = saldoDisponible;
             }
         }
-
     }
-
 }

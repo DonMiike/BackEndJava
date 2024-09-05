@@ -25,11 +25,8 @@ public class ReporteService {
     @Autowired
     private MovimientoRepository movimientoRepository;
 
-    public ReporteEstadoCuentaDTO generarReporte(Long clienteId, String fechaInicio, String fechaFin) throws Exception {
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new Exception("Cliente no encontrado"));
-
-        List<Cuenta> cuentas = cuentaRepository.findByCliente_ClienteId(clienteId);
+    public ReporteEstadoCuentaDTO generarReporte(String fechaInicio, String fechaFin) throws Exception {
+        List<Cuenta> cuentas = cuentaRepository.findAll();
 
         List<ReporteEstadoCuentaDTO.CuentaDTO> cuentasDTO = new ArrayList<>();
         for (Cuenta cuenta : cuentas) {
@@ -52,14 +49,14 @@ public class ReporteService {
             cuentaDTO.setNumeroCuenta(cuenta.getNumeroCuenta());
             cuentaDTO.setTipoCuenta(cuenta.getTipoCuenta());
             cuentaDTO.setSaldoInicial(cuenta.getSaldoInicial());
-            cuentaDTO.setSaldoDisponible(cuenta.getSaldoInicial()); // Actualizar si es necesario
+            cuentaDTO.setSaldoDisponible(cuenta.getSaldoInicial());
             cuentaDTO.setMovimientos(movimientosDTO);
 
             cuentasDTO.add(cuentaDTO);
         }
 
         ReporteEstadoCuentaDTO reporteDTO = new ReporteEstadoCuentaDTO();
-        reporteDTO.setClienteId(clienteId);
+
         reporteDTO.setCuentas(cuentasDTO);
 
         return reporteDTO;

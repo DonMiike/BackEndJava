@@ -1,8 +1,10 @@
 package com.api.crud.controllers;
 
+import com.api.crud.execptions.ResponseMessage;
 import com.api.crud.models.Cliente;
 import com.api.crud.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,23 +29,26 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.guardarCliente(cliente));
     }
 
-    // Obtener un cliente por ID
-    @GetMapping("/clientes/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtenerClientePorId(@PathVariable Long id) {
         Cliente cliente = clienteService.obtenerClientePorId(id);
         return ResponseEntity.ok(cliente);
     }
 
     // Actualizar un cliente
-    @PutMapping("/clientes/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
         return ResponseEntity.ok(clienteService.actualizarCliente(id, clienteActualizado));
     }
 
     // Eliminar un cliente
-    @DeleteMapping("/clientes/{id}")
-    public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseMessage> eliminarCliente(@PathVariable Long id) {
+        ResponseMessage response = clienteService.eliminarCliente(id);
+        if (response.getMessage().equals("Cliente eliminado con éxito.")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 }

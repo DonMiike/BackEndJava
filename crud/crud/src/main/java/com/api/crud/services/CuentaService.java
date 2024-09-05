@@ -1,5 +1,6 @@
 package com.api.crud.services;
 
+import com.api.crud.execptions.ResponseMessage;
 import com.api.crud.models.Cuenta;
 import com.api.crud.repositories.CuentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,14 @@ public class CuentaService {
         return cuentaRepository.save(cuentaExistente);
     }
 
-    public void eliminarCuenta(Long id) {
-        Cuenta cuenta = obtenerCuentaPorId(id);
-        cuentaRepository.delete(cuenta);
+
+    public ResponseMessage eliminarCuenta(Long id) {
+        Optional<Cuenta> cuenta = cuentaRepository.findById(id);
+        if (cuenta.isPresent()) {
+            cuentaRepository.delete(cuenta.get());
+            return new ResponseMessage("Cuenta eliminada con éxito.");
+        } else {
+            return new ResponseMessage("Cuenta no encontrada.");
+        }
     }
 }

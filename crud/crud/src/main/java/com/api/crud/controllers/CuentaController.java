@@ -1,8 +1,10 @@
 package com.api.crud.controllers;
 
+import com.api.crud.execptions.ResponseMessage;
 import com.api.crud.models.Cuenta;
 import com.api.crud.services.CuentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,7 @@ public class CuentaController {
         return ResponseEntity.ok(cuentaGuardada);
     }
 
-    @GetMapping("/cuentas/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Cuenta> obtenerCuentaPorId(@PathVariable Long id) {
         try {
             Cuenta cuenta = cuentaService.obtenerCuentaPorId(id);
@@ -37,7 +39,7 @@ public class CuentaController {
         }
     }
 
-    @PutMapping("/cuentas/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Cuenta> actualizarCuenta(@PathVariable Long id, @RequestBody Cuenta cuentaActualizada) {
         try {
             Cuenta cuenta = cuentaService.actualizarCuenta(id, cuentaActualizada);
@@ -47,13 +49,14 @@ public class CuentaController {
         }
     }
 
-    @DeleteMapping("/cuentas/{id}")
-    public ResponseEntity<Void> eliminarCuenta(@PathVariable Long id) {
-        try {
-            cuentaService.eliminarCuenta(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseMessage> eliminarCuenta(@PathVariable Long id) {
+        ResponseMessage response = cuentaService.eliminarCuenta(id);
+        if (response.getMessage().equals("Cuenta eliminada con éxito.")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
 }
